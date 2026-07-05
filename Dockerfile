@@ -10,6 +10,13 @@ RUN npm run build
 FROM python:3.12-slim
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /usr/local/bin/uv
 
+# opencv-python (pulled in transitively by docling's table-structure model)
+# needs these native libs even headless; missing libxcb.so.1 etc crashes
+# ingestion of any PDF/DOCX/PPTX/XLSX at the "table_model" init step.
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    libgl1 libglib2.0-0 libsm6 libxext6 libxrender1 libxcb1 libgomp1 \
+    && rm -rf /var/lib/apt/lists/*
+
 WORKDIR /srv/backend
 COPY backend/pyproject.toml backend/uv.lock ./
 ENV UV_PROJECT_ENVIRONMENT=/srv/venv

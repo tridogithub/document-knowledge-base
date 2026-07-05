@@ -42,7 +42,7 @@ export default function App() {
   return (
     <div className="app">
       <header>
-        <div className="logo">📚 RAG System</div>
+        <div className="logo">📚 Docs KB</div>
         <div className="toolbar">
           <button onClick={() => setShowMcp(true)}>🖥 MCP Servers</button>
           <button

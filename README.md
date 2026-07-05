@@ -25,7 +25,7 @@ docker compose up --build
 ```
 
 - Web UI: http://localhost:8000
-- MCP endpoint: http://localhost:8000/mcp (streamable HTTP)
+- MCP endpoint: http://localhost:8000/mcp/ (streamable HTTP — trailing slash required)
 - Qdrant dashboard: http://localhost:6333/dashboard
 
 > First build is slow and the image is large (Docling ships ML models via PyTorch).
@@ -51,7 +51,7 @@ auto-detected per project.
 Click **MCP Server** in the UI and copy the config, or add manually:
 
 ```json
-{ "mcpServers": { "doc-kb": { "type": "http", "url": "http://localhost:8000/mcp" } } }
+{ "mcpServers": { "doc-kb": { "type": "http", "url": "http://localhost:8000/mcp/" } } }
 ```
 
 Tools exposed:

@@ -164,6 +164,8 @@ def search(project_id: str, q: str = Query(...)) -> dict:
 
 @router.get("/mcp-info")
 def mcp_info() -> dict:
-    url = f"{settings.public_base_url.rstrip('/')}/mcp"
+    # trailing slash required: the MCP sub-app is mounted at "/mcp" and only
+    # matches its inner "/" route when the request path itself ends in "/"
+    url = f"{settings.public_base_url.rstrip('/')}/mcp/"
     config = {"mcpServers": {"doc-kb": {"type": "http", "url": url}}}
     return {"url": url, "config_json": json.dumps(config, indent=2)}

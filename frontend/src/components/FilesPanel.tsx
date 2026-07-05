@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { api, type KbFile, type Project } from '../api'
+import { toFileUrl } from '../fileLink'
 
 const STATUS_LABEL: Record<KbFile['status'], string> = {
   pending: 'Pending',
@@ -113,9 +114,15 @@ export function FilesPanel({ project }: { project: Project }) {
                 {f.status === 'indexed' ? ` · ${f.chunk_count} chunks` : ''}
               </small>
               {f.source_path !== f.file_name && (
-                <div className="source-path" title={f.source_path}>
+                <a
+                  className="source-path"
+                  href={toFileUrl(f.source_path)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  title={`Open ${f.source_path}`}
+                >
                   {f.source_path}
-                </div>
+                </a>
               )}
             </div>
             <span className={`status ${f.status}`}>{STATUS_LABEL[f.status]}</span>

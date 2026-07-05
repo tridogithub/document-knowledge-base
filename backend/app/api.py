@@ -1,7 +1,10 @@
 import json
+import mimetypes
 import re
+from pathlib import Path
 
 from fastapi import APIRouter, BackgroundTasks, Form, HTTPException, Query, UploadFile
+from fastapi.responses import FileResponse
 from sqlmodel import func, select
 
 from . import retrieval, vectorstore
@@ -150,6 +153,25 @@ def upload_files(
             background.add_task(ingest_file, file.id)
             out.append({"id": file.id, "file_name": file.file_name, "status": file.status.value})
     return out
+
+
+@router.get("/projects/{project_id}/files/{file_id}/content")
+def file_content(project_id: str, file_id: str) -> FileResponse:
+    with get_session() as session:
+        _get_project(session, project_id)
+        file = session.get(File, file_id)
+        if file is None or file.project_id != project_id:
+            raise HTTPException(404, "File not found")
+    path = Path(file.file_path)
+    if not path.exists():
+        raise HTTPException(404, "File content not found on disk")
+    media_type = mimetypes.guess_type(file.file_name)[0] or "application/octet-stream"
+    return FileResponse(
+        path,
+        media_type=media_type,
+        filename=file.file_name,
+        content_disposition_type="inline",
+    )
 
 
 @router.delete("/projects/{project_id}/files/{file_id}", status_code=204)

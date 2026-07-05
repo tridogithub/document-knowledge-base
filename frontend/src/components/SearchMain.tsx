@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import { api, MAX_QUERY_LENGTH, type Match, type SearchResult } from '../api'
-import { toFileUrl } from '../fileLink'
 
 function locationLabel(loc: Match['location']): string {
   const parts: string[] = []
@@ -72,17 +71,15 @@ export function SearchMain({ projectId }: { projectId: string }) {
                     <strong>{r.file_name}</strong>
                     <span className="score">score {r.score.toFixed(3)}</span>
                   </div>
-                  {r.source_path !== r.file_name && (
-                    <a
-                      className="source-path"
-                      href={toFileUrl(r.source_path)}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      title={`Open ${r.source_path}`}
-                    >
-                      {r.source_path}
-                    </a>
-                  )}
+                  <a
+                    className="source-path"
+                    href={api.fileContentUrl(projectId, r.file_id)}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    title={`Open ${r.file_name} (originally from ${r.source_path})`}
+                  >
+                    {r.source_path}
+                  </a>
                   {r.matches.map((m) => (
                     <div className="match" key={m.chunk_id}>
                       <div className="loc">{locationLabel(m.location)}</div>

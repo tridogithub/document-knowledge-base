@@ -85,4 +85,6 @@ export const api = {
     ),
   mcpInfo: () => fetch('/api/mcp-info').then((r) => handle<McpInfo>(r)),
   health: () => fetch('/api/health').then((r) => r.ok),
+  fileContentUrl: (projectId: string, fileId: string) =>
+    `/api/projects/${projectId}/files/${fileId}/content`,
 }

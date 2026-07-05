@@ -11,6 +11,9 @@ class Settings(BaseSettings):
     embedding_api_key: str = ""
     embedding_model: str = "text-embedding-3-small"
     embedding_batch_size: int = 64
+    # e5-style models want "query: " / "passage: " prefixes; leave empty otherwise
+    embedding_query_prefix: str = ""
+    embedding_doc_prefix: str = ""
 
     qdrant_url: str = "http://localhost:6333"
 

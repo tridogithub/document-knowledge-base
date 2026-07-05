@@ -1,0 +1,4 @@
+Meeting notes 2026-07-01
+
+Decision: adopt Qdrant for the knowledge base project.
+Action: Tri to prepare the docker compose package by mid July.

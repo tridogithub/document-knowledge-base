@@ -1,0 +1,16 @@
+[project]
+name = "doc-kb-backend"
+version = "0.1.0"
+requires-python = ">=3.12"
+dependencies = [
+    "docling>=2.110.0",
+    "fastapi>=0.139.0",
+    "fastembed>=0.8.0",
+    "mcp[cli]>=1.28.1",
+    "openai>=2.44.0",
+    "pydantic-settings>=2.14.2",
+    "python-multipart>=0.0.32",
+    "qdrant-client>=1.18.0",
+    "sqlmodel>=0.0.39",
+    "uvicorn[standard]>=0.50.0",
+]

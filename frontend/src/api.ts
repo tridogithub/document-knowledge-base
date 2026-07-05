@@ -81,4 +81,5 @@ export const api = {
       handle<{ query: string; results: SearchResult[] }>(r),
     ),
   mcpInfo: () => fetch('/api/mcp-info').then((r) => handle<McpInfo>(r)),
+  health: () => fetch('/api/health').then((r) => r.ok),
 }

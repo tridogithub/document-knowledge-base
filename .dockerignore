@@ -1,0 +1,11 @@
+**/.git
+**/node_modules
+**/dist
+**/.venv
+backend/data
+backend/app/static
+samples
+implementation-plan
+*.md
+!README.md
+.env

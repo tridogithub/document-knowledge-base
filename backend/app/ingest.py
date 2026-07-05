@@ -34,6 +34,7 @@ def ingest_file(file_id: str) -> None:
             file_id=file.id,
             file_name=file.file_name,
             file_type=file.file_type,
+            source_path=file.source_path or file.file_name,
         )
         if not chunks:
             raise ValueError("No text content could be extracted from this file")
@@ -104,6 +105,7 @@ def _cli() -> None:
             project_id=project.id,
             file_name=file_path.name,
             file_path=str(dest),
+            source_path=str(file_path.resolve()),
             file_type=file_path.suffix.lstrip(".").lower(),
         )
         session.add(file)

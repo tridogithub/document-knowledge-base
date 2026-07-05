@@ -13,6 +13,7 @@ export function FilesPanel({ project }: { project: Project }) {
   const [filter, setFilter] = useState('')
   const [error, setError] = useState('')
   const [dragging, setDragging] = useState(false)
+  const [sourceDir, setSourceDir] = useState('')
   const inputRef = useRef<HTMLInputElement>(null)
 
   const refresh = useCallback(
@@ -35,7 +36,7 @@ export function FilesPanel({ project }: { project: Project }) {
   const upload = async (list: FileList | File[]) => {
     setError('')
     try {
-      await api.uploadFiles(project.id, Array.from(list))
+      await api.uploadFiles(project.id, Array.from(list), sourceDir)
       refresh()
     } catch (e) {
       setError((e as Error).message)
@@ -77,6 +78,14 @@ export function FilesPanel({ project }: { project: Project }) {
           onChange={(e) => setFilter(e.target.value)}
         />
 
+        <input
+          className="search-input"
+          placeholder="Source folder (optional, e.g. /Users/me/Documents)"
+          title="The folder these files live in on your machine — stored as metadata so search results can point back to it."
+          value={sourceDir}
+          onChange={(e) => setSourceDir(e.target.value)}
+        />
+
         <button
           className={`upload ${dragging ? 'dragging' : ''}`}
           onClick={() => inputRef.current?.click()}
@@ -103,6 +112,11 @@ export function FilesPanel({ project }: { project: Project }) {
                 {f.file_type.toUpperCase()}
                 {f.status === 'indexed' ? ` · ${f.chunk_count} chunks` : ''}
               </small>
+              {f.source_path !== f.file_name && (
+                <div className="source-path" title={f.source_path}>
+                  {f.source_path}
+                </div>
+              )}
             </div>
             <span className={`status ${f.status}`}>{STATUS_LABEL[f.status]}</span>
             <button className="file-remove" title="Remove file" onClick={() => removeFile(f)}>

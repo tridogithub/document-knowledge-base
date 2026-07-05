@@ -35,6 +35,7 @@ class File(SQLModel, table=True):
     project_id: str = Field(index=True, foreign_key="project.id")
     file_name: str
     file_path: str  # path on disk under uploads_dir
+    source_path: str | None = None  # original location on the user's machine, if known
     file_type: str  # extension without dot
     status: FileStatus = FileStatus.pending
     chunk_count: int = 0
@@ -48,9 +49,19 @@ engine = create_engine(
 )
 
 
+def _migrate() -> None:
+    """Add columns introduced after the initial release to an existing sqlite file."""
+    with engine.connect() as conn:
+        cols = {row[1] for row in conn.exec_driver_sql("PRAGMA table_info(file)")}
+        if "source_path" not in cols:
+            conn.exec_driver_sql("ALTER TABLE file ADD COLUMN source_path TEXT")
+            conn.commit()
+
+
 def init_db() -> None:
     settings.data_dir.mkdir(parents=True, exist_ok=True)
     SQLModel.metadata.create_all(engine)
+    _migrate()
 
 
 def get_session() -> Session:

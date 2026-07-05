@@ -64,7 +64,7 @@ Tools exposed:
 | Method & path | Purpose |
 |---|---|
 | `GET/POST /api/projects`, `DELETE /api/projects/{id}` | manage projects |
-| `GET/POST /api/projects/{id}/files`, `DELETE .../files/{fid}` | upload (multipart, background indexing) / remove files |
+| `GET/POST /api/projects/{id}/files`, `DELETE .../files/{fid}` | upload (multipart, background indexing) / remove files. Optional `source_dir` form field records where the files live on the user's machine (browsers don't expose a picked file's real path); it's stored as `source_path` metadata and returned in file listings, search results, and MCP tool output so a human/agent can navigate back to the original. |
 | `GET /api/projects/{id}/search?q=` | hybrid search, max 512-char query, ≤3 files |
 | `GET /api/mcp-info` | MCP endpoint + copy-paste config |
 

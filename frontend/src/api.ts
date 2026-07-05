@@ -8,6 +8,7 @@ export interface Project {
 export interface KbFile {
   id: string
   file_name: string
+  source_path: string
   file_type: string
   status: 'pending' | 'indexing' | 'indexed' | 'failed'
   chunk_count: number
@@ -26,6 +27,7 @@ export interface SearchResult {
   file_id: string
   file_name: string
   file_path: string
+  source_path: string
   file_type: string
   score: number
   matches: Match[]
@@ -65,9 +67,10 @@ export const api = {
     fetch(`/api/projects/${id}`, { method: 'DELETE' }).then((r) => handle<void>(r)),
   listFiles: (projectId: string) =>
     fetch(`/api/projects/${projectId}/files`).then((r) => handle<KbFile[]>(r)),
-  uploadFiles: (projectId: string, files: File[]) => {
+  uploadFiles: (projectId: string, files: File[], sourceDir?: string) => {
     const form = new FormData()
     files.forEach((f) => form.append('files', f))
+    if (sourceDir?.trim()) form.append('source_dir', sourceDir.trim())
     return fetch(`/api/projects/${projectId}/files`, { method: 'POST', body: form }).then((r) =>
       handle<{ id: string }[]>(r),
     )

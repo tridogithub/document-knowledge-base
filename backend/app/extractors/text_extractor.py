@@ -19,7 +19,13 @@ def _link(chunks: list[Chunk]) -> list[Chunk]:
 
 
 def extract_text_file(
-    path: str | Path, *, project_id: str, file_id: str, file_name: str, file_type: str
+    path: str | Path,
+    *,
+    project_id: str,
+    file_id: str,
+    file_name: str,
+    file_type: str,
+    source_path: str | None = None,
 ) -> list[Chunk]:
     lines = Path(path).read_text(encoding="utf-8", errors="replace").splitlines()
     is_md = file_type in {"md", "markdown"}
@@ -45,6 +51,7 @@ def extract_text_file(
                     text=text,
                     embed_text=(" > ".join(section) + "\n" + text) if section else text,
                     chunk_index=0,
+                    source_path=source_path,
                     section_path=section,
                     line_start=buf_start,
                     line_end=end_line,

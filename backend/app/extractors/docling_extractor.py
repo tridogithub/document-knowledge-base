@@ -39,7 +39,13 @@ def _sheet_names(path: Path) -> list[str]:
 
 
 def extract_docling(
-    path: str | Path, *, project_id: str, file_id: str, file_name: str, file_type: str
+    path: str | Path,
+    *,
+    project_id: str,
+    file_id: str,
+    file_name: str,
+    file_type: str,
+    source_path: str | None = None,
 ) -> list[Chunk]:
     path = Path(path)
     doc = _get_converter().convert(path).document
@@ -69,6 +75,7 @@ def extract_docling(
             text=dc.text,
             embed_text=chunker.contextualize(chunk=dc),
             chunk_index=i,
+            source_path=source_path,
             section_path=list(dc.meta.headings or []),
         )
         if file_type == "pptx":

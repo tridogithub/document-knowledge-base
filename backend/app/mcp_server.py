@@ -70,7 +70,25 @@ def get_chunk_context(project: str, chunk_id: str) -> dict:
         if not pts:
             return None
         pl = pts[0].payload
-        return {k: pl.get(k) for k in ("id", "text", "section_path", "page", "slide", "sheet", "line_start", "line_end", "prev_chunk_id", "next_chunk_id")}
+        out = {
+            k: pl.get(k)
+            for k in (
+                "id",
+                "text",
+                "file_name",
+                "source_path",
+                "section_path",
+                "page",
+                "slide",
+                "sheet",
+                "line_start",
+                "line_end",
+                "prev_chunk_id",
+                "next_chunk_id",
+            )
+        }
+        out["source_path"] = out.get("source_path") or out.get("file_name")
+        return out
 
     chunk = fetch(chunk_id)
     if chunk is None:

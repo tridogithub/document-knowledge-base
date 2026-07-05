@@ -15,6 +15,8 @@ class Chunk:
     # text with heading context prepended, used for embedding only
     embed_text: str
     chunk_index: int
+    # original location of the file on the user's machine, if known
+    source_path: str | None = None
     section_path: list[str] = field(default_factory=list)
     page: int | None = None
     slide: int | None = None

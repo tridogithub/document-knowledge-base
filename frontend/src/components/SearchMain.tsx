@@ -71,6 +71,11 @@ export function SearchMain({ projectId }: { projectId: string }) {
                     <strong>{r.file_name}</strong>
                     <span className="score">score {r.score.toFixed(3)}</span>
                   </div>
+                  {r.source_path !== r.file_name && (
+                    <div className="source-path" title={r.source_path}>
+                      {r.source_path}
+                    </div>
+                  )}
                   {r.matches.map((m) => (
                     <div className="match" key={m.chunk_id}>
                       <div className="loc">{locationLabel(m.location)}</div>

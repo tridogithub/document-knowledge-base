@@ -1,7 +1,7 @@
 import json
 import re
 
-from fastapi import APIRouter, BackgroundTasks, HTTPException, Query, UploadFile
+from fastapi import APIRouter, BackgroundTasks, Form, HTTPException, Query, UploadFile
 from sqlmodel import func, select
 
 from . import retrieval, vectorstore
@@ -86,6 +86,7 @@ def list_files(project_id: str) -> list[dict]:
             {
                 "id": f.id,
                 "file_name": f.file_name,
+                "source_path": f.source_path or f.file_name,
                 "file_type": f.file_type,
                 "status": f.status.value,
                 "chunk_count": f.chunk_count,
@@ -98,8 +99,17 @@ def list_files(project_id: str) -> list[dict]:
 
 @router.post("/projects/{project_id}/files", status_code=202)
 def upload_files(
-    project_id: str, files: list[UploadFile], background: BackgroundTasks
+    project_id: str,
+    files: list[UploadFile],
+    background: BackgroundTasks,
+    source_dir: str | None = Form(None),
 ) -> list[dict]:
+    # Browsers never expose a picked file's absolute path (security sandboxing),
+    # so the true original location has to come from the user, e.g. the folder
+    # they dragged the files from. This is purely descriptive metadata for
+    # humans/agents to navigate back to the source — it is not read from disk.
+    source_dir = (source_dir or "").strip().rstrip("/\\") or None
+
     out = []
     with get_session() as session:
         _get_project(session, project_id)
@@ -126,10 +136,12 @@ def upload_files(
             dest.parent.mkdir(parents=True, exist_ok=True)
             dest.write_bytes(upload.file.read())
 
+            source_path = f"{source_dir}/{upload.filename}" if source_dir else None
             file = File(
                 project_id=project_id,
                 file_name=upload.filename,
                 file_path=str(dest),
+                source_path=source_path,
                 file_type=ext,
             )
             session.add(file)

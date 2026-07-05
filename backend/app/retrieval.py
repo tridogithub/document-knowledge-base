@@ -34,6 +34,7 @@ def aggregate_by_file(points: list[dict], top_k: int) -> list[dict]:
                 "file_id": pl["file_id"],
                 "file_name": pl["file_name"],
                 "file_path": pl["file_path"],
+                "source_path": pl.get("source_path") or pl["file_name"],
                 "file_type": pl["file_type"],
                 "matches": [],
             },
